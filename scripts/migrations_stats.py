@@ -16,6 +16,7 @@ import seaborn as sns
 import seaborn.objects as so
 from shapely import Polygon, LineString, Point
 from matplotlib.collections import LineCollection
+from PIL import Image
 
 with open("config.yaml") as f:
     CONFIG = yaml.load(f, Loader=yaml.FullLoader)
@@ -53,7 +54,7 @@ df_colony_movements_augmented_yearly = df_migrations_augmented.groupby(["year"])
 
 sns.set_style('white')
 
-f0 = plt.figure(figsize=(8, 8), dpi=200); a00 = f0.add_axes([0.15, 0.55, 0.70, 0.4]); a00_twin = a00.twinx()
+f0 = plt.figure(figsize=(82/25.4, 82/25.4), dpi=300); a00 = f0.add_axes([0.15, 0.55, 0.70, 0.4]); a00_twin = a00.twinx()
 sns.barplot(df_movements_yearly, x="year", y="n_of_migrations", ax=a00, color = "darkgrey")
 sns.barplot(df_movements_augmented_yearly, x="year", y="n_of_migrations", ax=a00_twin, color="teal")
 
@@ -83,6 +84,11 @@ a01_twin.tick_params(axis='both', which='major', labelsize=15)
 sns.set_style('white')
 
 f0.savefig(f'{CONFIG["colony_moves_by_year"]}')
+
+# Convert to CMYK for publication.
+image = Image.open(f'{CONFIG["colony_moves_by_year"]}')
+cmyk_image = image.convert('CMYK')
+cmyk_image.save(f'{CONFIG["colony_moves_by_year"]}_CMYK.pdf')
 
 # Construct df for storing stats.
 all_stats_migrations_yearly = df_movements_yearly
@@ -146,7 +152,7 @@ KMG_MID_migrated_augmented_small = df_migrations_augmented.loc[df_migrations_aug
 #################################
 # First, we draw for all years, then we do it year by year.
 df_dest0 = df_migrations_augmented.groupby(by=["week"])["FAMILY_MOVE"].sum().to_frame(name="n_of_migrations")
-f1 = plt.figure(figsize=(8, 4), dpi=200); a10 = f1.add_axes([0.15, 0.15, 0.8, 0.75])
+f1 = plt.figure(figsize=(82/25.4, 41/25.4), dpi=300); a10 = f1.add_axes([0.15, 0.15, 0.8, 0.75])
 sns.lineplot(df_dest0, x="week", y="n_of_migrations", markers="o")
 a10.set_title("Število premaknjenih družin po tednih - vsota 2014 - 2022")
 
@@ -172,6 +178,11 @@ grid2.tick_params(axis='both', which='major',labelsize=15)
 
 grid2.fig.savefig(f'{CONFIG["yearly_migration_dynamics"]}')
 
+# Convert to CMYK for publication.
+image = Image.open(f'{CONFIG["yearly_migration_dynamics"]}')
+cmyk_image = image.convert('CMYK')
+cmyk_image.save(f'{CONFIG["yearly_migration_dynamics"]}_CMYK.pdf')
+
 all_stats_weekly_migration_yearly = df_dest
 all_stats_weekly_migration_yearly_augmented = df_dest_augmented
 
@@ -190,7 +201,7 @@ df_n_of_colonies_in_package_augmented = pd.cut(
     bins=np.arange(0, 221, 1)
 ).value_counts().to_frame(name="Number of colonies migrated").reset_index()
 
-f2_1 = plt.figure(figsize=(8, 4), dpi=200); a20_1 = f2_1.add_axes([0.15, 0.15, 0.8, 0.75])
+f2_1 = plt.figure(figsize=(82/25.4, 41/25.4), dpi=300); a20_1 = f2_1.add_axes([0.15, 0.15, 0.8, 0.75])
 
 
 sns.histplot(data=df_migrations_augmented["FAMILY_MOVE"], bins=np.arange(0, 221, 1), ax=a20_1, color="teal")
@@ -204,6 +215,11 @@ a20_1.tick_params(axis='both', labelsize=15)
 sns.set_style('white')
 
 f2_1.savefig(f'{CONFIG["colony_packaging"]}')
+
+# Convert to CMYK for publication.
+image = Image.open(f'{CONFIG["colony_packaging"]}')
+cmyk_image = image.convert('CMYK')
+cmyk_image.save(f'{CONFIG["colony_packaging"]}_CMYK.pdf')
 
 # Load data about migrations survey.
 survey_fn = CONFIG['survey_results']
@@ -225,7 +241,7 @@ df_movements_yearly_small = df_migrations_augmented.loc[
 df_movements_per_beekeeper = df_migrations_augmented["travel_distances"].describe().reset_index()
 
 sns.set_style("white")
-f6 = plt.figure(figsize=(8, 4), dpi=200); a60 = f6.add_axes([0.15, 0.15, 0.68, 0.75]); a60_twin = a60.twinx()
+f6 = plt.figure(figsize=(82/25.4, 41/25.4), dpi=300); a60 = f6.add_axes([0.15, 0.15, 0.68, 0.75]); a60_twin = a60.twinx()
 
 sns.barplot(df_movements_yearly, x="year", y="razdalja [km]", color="teal", ax=a60)
 sns.barplot(df_movements_yearly_small, x="year", y="razdalja [km]", color="black", ax=a60_twin)
@@ -242,6 +258,11 @@ a60_twin.set_ylim(a60.get_ylim())
 sns.set_style('white')
 
 f6.savefig(f'{CONFIG["yearly_distances_traveled_cumulative"]}')
+
+# Convert to CMYK for publication.
+image = Image.open(f'{CONFIG["yearly_distances_traveled_cumulative"]}')
+cmyk_image = image.convert('CMYK')
+cmyk_image.save(f'{CONFIG["yearly_distances_traveled_cumulative"]}_CMYK.pdf')
 
 all_stats_migration_distances_yearly = df_movements_yearly
 all_stats_migration_distances_yearly_small = df_movements_yearly_small
@@ -270,7 +291,7 @@ df_cost_total = pd.DataFrame(
 )
 
 # Plot yearly costs of fuel and toll.
-f_fuel = plt.figure(figsize=(8, 4), dpi=200)
+f_fuel = plt.figure(figsize=(82/25.4, 41/25.4), dpi=300)
 a_fuel = f_fuel.add_axes((0.15, 0.15, 0.80, 0.75))
 sns.set_style('white')
 sns.barplot(data=df_cost_total, x="year", y="total cost Euro 0 - 2", color="darkgrey", ax=a_fuel, label="toll Euro 0 - 2")
@@ -283,11 +304,16 @@ a_fuel.legend()
 sns.set_style('white')
 f_fuel.savefig(f'{CONFIG["yearly_costs_fig"]}')
 
+# Convert to CMYK for publication.
+image = Image.open(f'{CONFIG["yearly_costs_fig"]}')
+cmyk_image = image.convert('CMYK')
+cmyk_image.save(f'{CONFIG["yearly_costs_fig"]}_CMYK.pdf')
+
 # Plot travel times.
 df_traveled_distances = pd.cut(df_migrations_augmented["travel_distances"], bins=np.arange(0, 300, 5)).value_counts().to_frame(name="Kilometers traveled").reset_index()
 df_traveled_motorway = pd.cut(df_migrations_augmented["motorway"], bins=np.arange(0, 300, 5)).value_counts().to_frame(name="Kilometers on motorway").reset_index() 
 df_traveled_distances = pd.cut(df_migrations_augmented["travel_time"], bins=np.arange(0, 300, 5)).value_counts().to_frame(name="Kilometers traveled").reset_index()
-f_traveled_distances = plt.figure(figsize=(8, 4.2), dpi=200)
+f_traveled_distances = plt.figure(figsize=(82/25.4, 43/25.4), dpi=300)
 a_traveled_distances = f_traveled_distances.add_axes((0.15, 0.15, 0.80, 0.75))
 sns.set_style('white')
 sns.histplot(data=df_migrations_augmented["travel_time"], bins=np.arange(0, 300, 5), ax=a_traveled_distances, color="teal")
@@ -295,6 +321,11 @@ a_traveled_distances.set_xlabel("Travel times within single migration [minutes]"
 a_traveled_distances.set_ylabel("Count", fontsize=15)
 a_traveled_distances.tick_params(axis='both', labelsize=15)
 f_traveled_distances.savefig(f'{CONFIG["travel_time_fig"]}')
+
+# Convert to CMYK for publication.
+image = Image.open(f'{CONFIG["travel_time_fig"]}')
+cmyk_image = image.convert('CMYK')
+cmyk_image.save(f'{CONFIG["travel_time_fig"]}_CMYK.pdf')
 
 ############
 # Save stats
@@ -333,4 +364,3 @@ all_stats_migrations_distances_per_beekeper.to_excel(writer, sheet_name="Travel 
 df_cost_total.to_excel(writer, sheet_name="Costs of transport, fuel, toll")
 
 writer.close()
-
